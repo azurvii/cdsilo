@@ -1,0 +1,22 @@
+<RCC>
+  <qresource prefix="images" >
+    <file>undo.png</file>
+    <file>table.png</file>
+    <file>edit.png</file>
+    <file>qt-cube.png</file>
+    <file>help_about.png</file>
+    <file>configure.png</file>
+    <file>1uparrow.png</file>
+    <file>1downarrow.png</file>
+    <file>find.png</file>
+    <file>filenew.png</file>
+    <file>next.png</file>
+    <file>application_exit.png</file>
+    <file>edit_add.png</file>
+    <file>editdelete.png</file>
+    <file>fileopen.png</file>
+    <file>filesave.png</file>
+    <file>locationbar_erase.png</file>
+    <file>dialog_close.png</file>
+  </qresource>
+</RCC>

@@ -1,0 +1,12 @@
+INPUT(
+./debug/labelcommentdialog.o
+./debug/main.o
+./debug/mainwindow.o
+./debug/silodelegate.o
+./debug/silofilter.o
+./debug/moc_labelcommentdialog.o
+./debug/moc_mainwindow.o
+./debug/moc_silodelegate.o
+./debug/moc_silofilter.o
+./debug/qrc_images.o
+);
