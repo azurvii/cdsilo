@@ -1,0 +1,676 @@
+<ui version="4.0" >
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>686</width>
+    <height>620</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>CD Silo</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <layout class="QVBoxLayout" name="verticalLayout" >
+    <item>
+     <widget class="QWidget" native="1" name="findWidget" >
+      <layout class="QHBoxLayout" name="horizontalLayout_3" >
+       <property name="spacing" >
+        <number>1</number>
+       </property>
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QToolButton" name="closeFindButton" >
+         <property name="text" >
+          <string>Close</string>
+         </property>
+         <property name="icon" >
+          <iconset resource="images/images.qrc" >
+           <normaloff>:/images/dialog_close.png</normaloff>:/images/dialog_close.png</iconset>
+         </property>
+         <property name="autoRaise" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_8" >
+         <property name="text" >
+          <string>Find in </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="findIdCombo" />
+       </item>
+       <item>
+        <widget class="QStackedWidget" name="findStack" >
+         <widget class="QWidget" name="textPage" >
+          <layout class="QHBoxLayout" name="horizontalLayout" >
+           <property name="spacing" >
+            <number>1</number>
+           </property>
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QToolButton" name="clearFindButton" >
+             <property name="statusTip" >
+              <string>Clear find text</string>
+             </property>
+             <property name="text" >
+              <string>Clear</string>
+             </property>
+             <property name="icon" >
+              <iconset resource="images/images.qrc" >
+               <normaloff>:/images/locationbar_erase.png</normaloff>:/images/locationbar_erase.png</iconset>
+             </property>
+             <property name="autoRaise" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="findEdit" />
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="timePage" >
+          <layout class="QHBoxLayout" name="horizontalLayout_2" >
+           <property name="spacing" >
+            <number>1</number>
+           </property>
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QComboBox" name="findDateTypeCombo" />
+           </item>
+           <item>
+            <widget class="QDateTimeEdit" name="findDateTimeEdit" >
+             <property name="calendarPopup" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer" >
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0" >
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="sizePage" >
+          <layout class="QHBoxLayout" name="horizontalLayout_4" >
+           <property name="spacing" >
+            <number>1</number>
+           </property>
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QComboBox" name="findSizeTypeCombo" />
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="findSizeSpin" >
+             <property name="sizePolicy" >
+              <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="alignment" >
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="maximum" >
+              <double>999999999.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="findUnitCombo" />
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="findButton" >
+         <property name="text" >
+          <string>Find</string>
+         </property>
+         <property name="icon" >
+          <iconset resource="images/images.qrc" >
+           <normaloff>:/images/find.png</normaloff>:/images/find.png</iconset>
+         </property>
+         <property name="toolButtonStyle" >
+          <enum>Qt::ToolButtonTextBesideIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="undoFindButton" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
+         <property name="statusTip" >
+          <string>Back to original data set</string>
+         </property>
+         <property name="text" >
+          <string>Revert</string>
+         </property>
+         <property name="icon" >
+          <iconset resource="images/images.qrc" >
+           <normaloff>:/images/undo.png</normaloff>:/images/undo.png</iconset>
+         </property>
+         <property name="autoRaise" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTableView" name="tableView" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+        <horstretch>1</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="alternatingRowColors" >
+       <bool>true</bool>
+      </property>
+      <property name="selectionBehavior" >
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <property name="horizontalScrollMode" >
+       <enum>QAbstractItemView::ScrollPerPixel</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="editGroup" >
+      <layout class="QFormLayout" name="formLayout" >
+       <property name="fieldGrowthPolicy" >
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       </property>
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string>&amp;Name:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>fileNameEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <widget class="QLineEdit" name="fileNameEdit" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+           <horstretch>2</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="frame" >
+          <bool>false</bool>
+         </property>
+         <property name="readOnly" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QLabel" name="label_9" >
+         <property name="text" >
+          <string>&amp;Type:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>fileTypeEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QLineEdit" name="fileTypeEdit" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="frame" >
+          <bool>false</bool>
+         </property>
+         <property name="readOnly" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <widget class="QLabel" name="label_2" >
+         <property name="text" >
+          <string>&amp;Path:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>filePathEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QLineEdit" name="filePathEdit" >
+         <property name="frame" >
+          <bool>false</bool>
+         </property>
+         <property name="readOnly" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" >
+        <widget class="QLabel" name="fileSizeLabel" >
+         <property name="text" >
+          <string>&amp;Size:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>fileSizeEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" >
+        <widget class="QLineEdit" name="fileSizeEdit" >
+         <property name="frame" >
+          <bool>false</bool>
+         </property>
+         <property name="readOnly" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" >
+        <widget class="QLabel" name="label_6" >
+         <property name="text" >
+          <string>Last &amp;Modified:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>fileDateEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" >
+        <widget class="QLineEdit" name="fileDateEdit" >
+         <property name="frame" >
+          <bool>false</bool>
+         </property>
+         <property name="readOnly" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" >
+        <widget class="QLabel" name="label_4" >
+         <property name="text" >
+          <string>&amp;Label:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>fileLabelEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1" >
+        <widget class="QLineEdit" name="fileLabelEdit" />
+       </item>
+       <item row="6" column="0" >
+        <widget class="QLabel" name="label_5" >
+         <property name="text" >
+          <string>&amp;Comment:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>fileCommentEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1" >
+        <widget class="QLineEdit" name="fileCommentEdit" />
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+   <zorder>tableView</zorder>
+   <zorder>findWidget</zorder>
+   <zorder>editGroup</zorder>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>686</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionNew" />
+    <addaction name="actionOpen" />
+    <addaction name="actionSave" />
+    <addaction name="separator" />
+    <addaction name="actionExit" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionEditView" />
+    <addaction name="actionFindView" />
+    <addaction name="separator" />
+    <addaction name="actionResizeView" />
+   </widget>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionAdd" />
+    <addaction name="actionDelete" />
+    <addaction name="separator" />
+    <addaction name="actionEnableSorting" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQt" />
+   </widget>
+   <addaction name="menuFile" />
+   <addaction name="menuEdit" />
+   <addaction name="menuView" />
+   <addaction name="menuHelp" />
+  </widget>
+  <widget class="QStatusBar" name="statusbar" />
+  <action name="actionNew" >
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/filenew.png</normaloff>:/images/filenew.png</iconset>
+   </property>
+   <property name="text" >
+    <string>New</string>
+   </property>
+   <property name="statusTip" >
+    <string>Create a new data set</string>
+   </property>
+  </action>
+  <action name="actionOpen" >
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/fileopen.png</normaloff>:/images/fileopen.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Open...</string>
+   </property>
+   <property name="statusTip" >
+    <string>Continue a previous data set</string>
+   </property>
+  </action>
+  <action name="actionSave" >
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/filesave.png</normaloff>:/images/filesave.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Save</string>
+   </property>
+   <property name="statusTip" >
+    <string>Save current data set</string>
+   </property>
+  </action>
+  <action name="actionExit" >
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/application_exit.png</normaloff>:/images/application_exit.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Exit</string>
+   </property>
+   <property name="statusTip" >
+    <string>Exit this program</string>
+   </property>
+  </action>
+  <action name="actionEditView" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/edit.png</normaloff>:/images/edit.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Edit View</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show Edit View to modify data</string>
+   </property>
+  </action>
+  <action name="actionFindView" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/find.png</normaloff>:/images/find.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Find View</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show Find View to find specific data with wildcard format</string>
+   </property>
+  </action>
+  <action name="actionAdd" >
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/edit_add.png</normaloff>:/images/edit_add.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Add entry</string>
+   </property>
+   <property name="statusTip" >
+    <string>Add an entry to current data set</string>
+   </property>
+  </action>
+  <action name="actionDelete" >
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/editdelete.png</normaloff>:/images/editdelete.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Delete</string>
+   </property>
+   <property name="statusTip" >
+    <string>Delete selected records</string>
+   </property>
+  </action>
+  <action name="actionResizeView" >
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/table.png</normaloff>:/images/table.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Auto resize cells</string>
+   </property>
+   <property name="statusTip" >
+    <string>Set cell sizes to fit their contents</string>
+   </property>
+  </action>
+  <action name="actionEnableSorting" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/next.png</normaloff>:/images/next.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Enable sorting</string>
+   </property>
+   <property name="statusTip" >
+    <string>Enable in-table sorting</string>
+   </property>
+  </action>
+  <action name="actionAbout" >
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/help_about.png</normaloff>:/images/help_about.png</iconset>
+   </property>
+   <property name="text" >
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionAboutQt" >
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/qt-cube.png</normaloff>:/images/qt-cube.png</iconset>
+   </property>
+   <property name="text" >
+    <string>About Qt</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>tableView</tabstop>
+  <tabstop>fileNameEdit</tabstop>
+  <tabstop>fileTypeEdit</tabstop>
+  <tabstop>filePathEdit</tabstop>
+  <tabstop>fileSizeEdit</tabstop>
+  <tabstop>fileDateEdit</tabstop>
+  <tabstop>fileLabelEdit</tabstop>
+  <tabstop>fileCommentEdit</tabstop>
+  <tabstop>closeFindButton</tabstop>
+  <tabstop>clearFindButton</tabstop>
+  <tabstop>findIdCombo</tabstop>
+  <tabstop>findEdit</tabstop>
+  <tabstop>findDateTypeCombo</tabstop>
+  <tabstop>findDateTimeEdit</tabstop>
+  <tabstop>findSizeSpin</tabstop>
+  <tabstop>findUnitCombo</tabstop>
+  <tabstop>findButton</tabstop>
+  <tabstop>undoFindButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="images/images.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>348</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionEditView</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editGroup</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>348</x>
+     <y>434</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionFindView</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>findWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>348</x>
+     <y>32</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>closeFindButton</sender>
+   <signal>clicked()</signal>
+   <receiver>actionFindView</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>28</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>clearFindButton</sender>
+   <signal>clicked()</signal>
+   <receiver>findEdit</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>165</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>266</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>findEdit</sender>
+   <signal>returnPressed()</signal>
+   <receiver>findButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>369</x>
+     <y>36</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>652</x>
+     <y>49</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
