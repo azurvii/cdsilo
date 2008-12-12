@@ -6,7 +6,8 @@
  */
 
 #include "silofilter.h"
-#include "mainwindow.h"
+#include "common.h"
+using namespace Silo;
 
 SiloFilter::SiloFilter(QObject *parent) :
 	QSortFilterProxyModel(parent) {
@@ -15,25 +16,24 @@ SiloFilter::SiloFilter(QObject *parent) :
 }
 
 void SiloFilter::setFilterDateTime(const QDateTime &dateTime,
-		SiloFilter::FilterType filterType) {
+		FilterType filterType) {
 	this->filterType = filterType;
 	filterDate = dateTime;
 }
 
-void SiloFilter::setFilterSize(qint64 filterSize,
-		SiloFilter::FilterType filterType) {
+void SiloFilter::setFilterSize(qint64 filterSize, FilterType filterType) {
 	this->filterType = filterType;
 	this->filterSize = filterSize;
 }
 
-void SiloFilter::setFilterType(SiloFilter::FilterType filterType) {
+void SiloFilter::setFilterType(FilterType filterType) {
 	this->filterType = filterType;
 }
 
 bool SiloFilter::filterAcceptsRow(int sourceRow,
 		const QModelIndex &sourceParent) const {
 	int keyColumn = filterKeyColumn();
-	if (keyColumn == MainWindow::ID_DATE) {
+	if (keyColumn == ID_DATE) {
 		if (filterType == FILTER_INVALID) {
 			return true;
 		}
@@ -47,7 +47,7 @@ bool SiloFilter::filterAcceptsRow(int sourceRow,
 		case FILTER_MATCH:
 			return index.data(Qt::DisplayRole).toDateTime() == filterDate;
 		}
-	} else if (keyColumn == MainWindow::ID_SIZE) {
+	} else if (keyColumn == ID_SIZE) {
 		if (filterType == FILTER_INVALID) {
 			return true;
 		}

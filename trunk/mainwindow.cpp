@@ -10,23 +10,6 @@
 #include "labelcommentdialog.h"
 #include "silodelegate.h"
 
-// Convenient for debug
-void dbg(const QString &message) {
-	QMessageBox::information(0, QObject::tr("DEBUG"), message);
-}
-
-//---------- private const ----------//
-
-const qint16 MainWindow::dbVersion = 0x0100;
-const qint16 MainWindow::dbHeader = 0xE7FC;
-const int MainWindow::dataStreamVersion = QDataStream::Qt_4_4;
-const QString MainWindow::dateTimeFormat = QObject::tr("yyyy-MM-dd HH:mm:ss");
-const QString MainWindow::multivalueString = QObject::tr(
-		"<<< multiple values >>>");
-QHash<int, QString> MainWindow::columnNames;
-QHash<int, QString> MainWindow::unitNames;
-const int MainWindow::sizeDecimal = 2;
-
 //---------- public ----------//
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -57,7 +40,6 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 void MainWindow::appendFilter(SiloFilter *filter) {
-	//	if (this->filter->isActive()) {
 	filter->setSourceModel(&model);
 	if (filters.size() > 0) {
 		filters.last()->setSourceModel(filter);
@@ -65,12 +47,6 @@ void MainWindow::appendFilter(SiloFilter *filter) {
 		this->filter->setSourceModel(filter);
 	}
 	filters.append(filter);
-	//	} else {
-	//		filter->setSourceModel(&model);
-	//		tableView->setModel(filter);
-	//		delete this->filter;
-	//		this->filter = filter;
-	//	}
 	undoFindButton->setEnabled(filter->rowCount() != model.rowCount());
 	updateRowCount();
 }
@@ -83,50 +59,10 @@ void MainWindow::clearFilters() {
 		}
 		filters.clear();
 	}
-	filter->setFilterType(SiloFilter::FILTER_INVALID);
+	filter->setFilterType(FILTER_INVALID);
 	filter->setFilterWildcard(QString());
 	undoFindButton->setEnabled(false);
 	updateRowCount();
-}
-
-//---------- public static ----------//
-
-qint64 MainWindow::getBytes(double displayValue, UnitType unit) {
-	int u = unit;
-	while (u > UNIT_B) {
-		displayValue *= 1024.0;
-		--u;
-	}
-	return qint64(displayValue);
-}
-
-QString MainWindow::stringFromSize(qint64 size, int precision) {
-	int unit = UNIT_B;
-	double displayValue = size;
-	while (displayValue >= 1024.0) {
-		if (unit >= UNIT_MAX) {
-			--unit;
-			break;
-		}
-		displayValue /= 1024.0;
-		++unit;
-	}
-	return tr("%1%2").arg(displayValue, 0, 'f', unit == 0 ? 0 : precision).arg(
-			unitNames[unit]);
-}
-
-void MainWindow::populateDateFilterCombo(QComboBox *combo) {
-	combo->clear();
-	combo->addItem(tr("Before"));
-	combo->addItem(tr("Exactly"));
-	combo->addItem(tr("After"));
-}
-
-void MainWindow::populateSizeFilterCombo(QComboBox *combo) {
-	combo->clear();
-	combo->addItem(tr("Less than"));
-	combo->addItem(tr("Exactly"));
-	combo->addItem(tr("More than"));
 }
 
 //---------- protected ----------//
@@ -189,8 +125,6 @@ bool MainWindow::load() {
 		bool succ = false;
 		if (fileName.endsWith(tr(".silodb"), Qt::CaseInsensitive)) {
 			succ = loadSiloDatabase(fileName);
-			//		} else if (fileName.endsWith(tr(".csv"), Qt::CaseInsensitive)) {
-			//			succ = loadCSV(fileName);
 		} else {
 			showError(tr("This type is currently not supported."));
 		}
@@ -222,7 +156,7 @@ void MainWindow::add() {
 void MainWindow::del() {
 	QList<int> rows;
 	rowsSelectedSorted(rows);
-	// Deleting starts backward to avoid error
+	// Deleting starts backward to avoid invalid index
 	if (rows.size() > 0) {
 		for (int i = rows.size() - 1; i >= 0; --i) {
 			filter->removeRow(rows[i]);
@@ -260,12 +194,12 @@ void MainWindow::find() {
 			filter->setFilterWildcard(findPattern);
 		}
 	} else if (stackIndex == FIND_DATE) {
-		filter->setFilterDateTime(findDateTimeEdit->dateTime(),
-				SiloFilter::FilterType(findDateTypeCombo->currentIndex()));
+		filter->setFilterDateTime(findDateTimeEdit->dateTime(), FilterType(
+				findDateTypeCombo->currentIndex()));
 		filter->setFilterWildcard(QString());
 	} else if (stackIndex == FIND_SIZE) {
 		filter->setFilterSize(getBytes(findSizeSpin->value(), UnitType(
-				findUnitCombo->currentIndex())), SiloFilter::FilterType(
+				findUnitCombo->currentIndex())), FilterType(
 				findSizeTypeCombo->currentIndex()));
 		filter->setFilterWildcard(QString());
 	}
@@ -306,12 +240,10 @@ void MainWindow::onFindViewShown(bool shown) {
 
 void MainWindow::about() {
 	QMessageBox::about(this, tr("About CD Silo"), tr("CD Silo 0.2"
+		"\nA simple tool to have your disc data in hand."
 		"\n"
-		"\nThis is originally writen by Vincent."
-		"\nIcons used here are all from Oxygen and Qt."
-		"\n"
-		"\nI wrote this in hope to simplify my data CD/DVD collection management."
-		"\nIf you want to get your burnt CD/DVD's in control, get it a try."
+		"\nWriten by Vincent."
+		"\nIcons are from Oxygen and Qt."
 		"\n"
 		"\nThis program is provided \"AS IS\" with NO WARRANTY."
 		"\nIf you find bugs, please contact me."));
@@ -335,7 +267,7 @@ void MainWindow::onFindUnitChanged(int unit) {
 	if (unit == UNIT_B) {
 		findSizeSpin->setDecimals(0);
 	} else {
-		findSizeSpin->setDecimals(sizeDecimal);
+		findSizeSpin->setDecimals(sizePrecision);
 	}
 }
 
@@ -428,78 +360,6 @@ bool MainWindow::loadSiloDatabase(const QString &fileName) {
 	}
 	return false;
 }
-
-//bool MainWindow::loadCSV(const QString &fileName) {
-//	QFile file(fileName);
-//	if (file.open(QFile::ReadOnly)) {
-//		QTextStream stream(&file);
-//		QList<QStandardItem *> record;
-//		for (int i = 0; i < ID_MAX; ++i) {
-//			record.append(0);
-//		}
-//		progress.setLabelText(tr("Loading \"%1\"").arg(fileName));
-//		progress.setMaximum(0);
-//		progress.setModal(true);
-//		QString line, item;
-//		QStringList items;
-//		QVariant itemData;
-//		qint64 size;
-//		QDateTime dateTime;
-//		bool goodToGo = true;
-//		while (!(line = stream.readLine()).isEmpty()) {
-//			if (progress.wasCanceled()) {
-//				return false;
-//			}
-//			items = line.split(",", QString::KeepEmptyParts);
-//			if (items.size() != ID_MAX) {
-//				goodToGo = false;
-//			}
-//			if (!goodToGo) {
-//				showError(tr("Malformed CSV."
-//					"\nLoading aborted."));
-//				progress.reset();
-//				return false;
-//			}
-//			for (int i = ID_MIN; i < ID_MAX; ++i) {
-//				if (!goodToGo) {
-//					break;
-//				}
-//				item = items[i].trimmed();
-//				if (item.startsWith('"')) {
-//					item = item.mid(1, item.size() - 2);
-//				}
-//				if (i == ID_SIZE) {
-//					size = item.toLongLong(&goodToGo);
-//					if (goodToGo) {
-//						itemData = size;
-//					} else {
-//						continue;
-//					}
-//				} else if (i == ID_DATE) {
-//					dateTime = QDateTime::fromString(item);
-//					if (goodToGo = dateTime.isValid()) {
-//						itemData = dateTime;
-//					} else {
-//						continue;
-//					}
-//				} else {
-//					itemData = item;
-//				}
-//				record[i] = new QStandardItem();
-//				record[i]->setData(itemData, Qt::DisplayRole);
-//			}
-//			if (goodToGo) {
-//				model.appendRow(record);
-//			}
-//			qApp->processEvents();
-//		}
-//		return true;
-//	} else {
-//		showError(tr("Could not open file for reading: \"%1\".\n"
-//			"Error message: %2").arg(fileName).arg(file.errorString()));
-//	}
-//	return false;
-//}
 
 void MainWindow::addDir(const QString &dirName, const QString &root,
 		const QString &label, const QString &comment) {
@@ -616,7 +476,7 @@ void MainWindow::updateEditors() {
 			isMulti[col] = false;
 			if (col == ID_SIZE) {
 				sizeSum
-						+= filter->index(firstRow, col).data(Qt::DisplayRole).toInt();
+						+= filter->index(firstRow, col).data(Qt::DisplayRole).toLongLong();
 				contents[col] = stringFromSize(sizeSum);
 				continue;
 			} else if (col == ID_DATE) {
@@ -638,7 +498,7 @@ void MainWindow::updateEditors() {
 				for (int col = ID_MIN; col < ID_MAX; ++col) {
 					if (col == ID_SIZE) {
 						sizeSum += filter->index(rows[i], col).data(
-								Qt::DisplayRole).toInt();
+								Qt::DisplayRole).toLongLong();
 						continue;
 					} else if (col == ID_DATE) {
 						recordDateTime = filter->index(rows[i], col).data(
@@ -687,7 +547,7 @@ void MainWindow::linkEditors() {
 	editors[ID_COMMENT] = fileCommentEdit;
 }
 
-void MainWindow::updateModelFromEditor(MainWindow::ColumnType editorId) {
+void MainWindow::updateModelFromEditor(ColumnType editorId) {
 	QString content = editors[editorId]->text();
 	if (isMulti[editorId] && content == multivalueString) {
 		return;
@@ -792,58 +652,4 @@ void MainWindow::rowsFromSelectionSorted(QList<int> &modelRows,
 		const QItemSelectionModel *selectionModel) {
 	rowsFromSelection(modelRows, selectionModel);
 	qSort(modelRows);
-}
-
-void MainWindow::populateColumnCombo(QComboBox *combo) {
-	if (columnNames.size() != ID_MAX) {
-		populateColumnNames();
-	}
-	combo->clear();
-	combo->addItems(columnNames.values());
-}
-
-void MainWindow::populateUnitCombo(QComboBox *combo) {
-	if (unitNames.size() != UNIT_MAX) {
-		populateUnitNames();
-	}
-	combo->clear();
-	combo->addItems(unitNames.values());
-}
-
-void MainWindow::populateColumnNames() {
-	columnNames.clear();
-	columnNames[ID_NAME] = tr("Name");
-	columnNames[ID_PATH] = tr("Path");
-	columnNames[ID_TYPE] = tr("Type");
-	columnNames[ID_SIZE] = tr("Size");
-	columnNames[ID_DATE] = tr("Last Modified");
-	columnNames[ID_LABEL] = tr("Label");
-	columnNames[ID_COMMENT] = tr("Comment");
-}
-
-void MainWindow::populateUnitNames() {
-	unitNames.clear();
-	unitNames[UNIT_B] = tr("B");
-	unitNames[UNIT_KB] = tr("KB");
-	unitNames[UNIT_MB] = tr("MB");
-	unitNames[UNIT_GB] = tr("GB");
-	unitNames[UNIT_TB] = tr("TB");
-	unitNames[UNIT_PB] = tr("PB");
-}
-
-void MainWindow::populateModelHeaders(QAbstractItemModel *model) {
-	model->setHeaderData(ID_NAME, Qt::Horizontal, columnNames[ID_NAME],
-			Qt::DisplayRole);
-	model->setHeaderData(ID_PATH, Qt::Horizontal, columnNames[ID_PATH],
-			Qt::DisplayRole);
-	model->setHeaderData(ID_TYPE, Qt::Horizontal, columnNames[ID_TYPE],
-			Qt::DisplayRole);
-	model->setHeaderData(ID_SIZE, Qt::Horizontal, columnNames[ID_SIZE],
-			Qt::DisplayRole);
-	model->setHeaderData(ID_DATE, Qt::Horizontal, columnNames[ID_DATE],
-			Qt::DisplayRole);
-	model->setHeaderData(ID_LABEL, Qt::Horizontal, columnNames[ID_LABEL],
-			Qt::DisplayRole);
-	model->setHeaderData(ID_COMMENT, Qt::Horizontal, columnNames[ID_COMMENT],
-			Qt::DisplayRole);
 }
