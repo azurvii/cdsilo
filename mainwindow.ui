@@ -577,6 +577,9 @@
    <property name="text" >
     <string>Advanced Find</string>
    </property>
+   <property name="statusTip" >
+    <string>Show advanced find option dialog</string>
+   </property>
   </action>
  </widget>
  <tabstops>
