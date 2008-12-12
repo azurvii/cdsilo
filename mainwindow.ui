@@ -494,7 +494,7 @@
      <normaloff>:/images/edit_add.png</normaloff>:/images/edit_add.png</iconset>
    </property>
    <property name="text" >
-    <string>Add entry</string>
+    <string>Add Entry</string>
    </property>
    <property name="statusTip" >
     <string>Add an entry to current data set</string>
@@ -506,7 +506,7 @@
      <normaloff>:/images/editdelete.png</normaloff>:/images/editdelete.png</iconset>
    </property>
    <property name="text" >
-    <string>Delete selection</string>
+    <string>Delete Selection</string>
    </property>
    <property name="statusTip" >
     <string>Delete selected records</string>
@@ -518,7 +518,7 @@
      <normaloff>:/images/table.png</normaloff>:/images/table.png</iconset>
    </property>
    <property name="text" >
-    <string>Auto resize columns</string>
+    <string>Auto Resize Columns</string>
    </property>
    <property name="statusTip" >
     <string>Resize columns to fit contents</string>
@@ -547,6 +547,9 @@
    <property name="text" >
     <string>About</string>
    </property>
+   <property name="statusTip" >
+    <string>About this program</string>
+   </property>
   </action>
   <action name="actionAboutQt" >
    <property name="icon" >
@@ -556,6 +559,9 @@
    <property name="text" >
     <string>About Qt</string>
    </property>
+   <property name="statusTip" >
+    <string>About Qt library</string>
+   </property>
   </action>
   <action name="actionResizeRows" >
    <property name="icon" >
@@ -563,7 +569,7 @@
      <normaloff>:/images/table.png</normaloff>:/images/table.png</iconset>
    </property>
    <property name="text" >
-    <string>Auto resize rows</string>
+    <string>Auto Resize Rows</string>
    </property>
    <property name="statusTip" >
     <string>Resize rows to fit contents</string>

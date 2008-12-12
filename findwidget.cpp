@@ -9,6 +9,8 @@
 #include "mainwindow.h"
 #include "silofilter.h"
 #include <QMessageBox>
+#include "common.h"
+using namespace Silo;
 
 //---------- public ----------//
 
@@ -23,12 +25,12 @@ FindWidget::FindWidget(MainWindow *parent) :
 //---------- private static ----------//
 
 void FindWidget::populateSizeCombo(QComboBox *combo) {
-	MainWindow::populateSizeFilterCombo(combo);
+	populateSizeFilterCombo(combo);
 	combo->addItem(tr("Between"));
 }
 
 void FindWidget::populateDateCombo(QComboBox *combo) {
-	MainWindow::populateDateFilterCombo(combo);
+	populateDateFilterCombo(combo);
 	combo->addItem(tr("Between"));
 }
 
@@ -53,18 +55,18 @@ void FindWidget::onSizeFilterChanged(int index) {
 }
 
 void FindWidget::onSizeUnitChanged(int unit) {
-	if (unit == MainWindow::UNIT_B) {
+	if (unit == UNIT_B) {
 		sizeSpin->setDecimals(0);
 	} else {
-		sizeSpin->setDecimals(MainWindow::sizePrecision());
+		sizeSpin->setDecimals(sizePrecision);
 	}
 }
 
 void FindWidget::onSizeToUnitChanged(int unit) {
-	if (unit == MainWindow::UNIT_B) {
+	if (unit == UNIT_B) {
 		toSpin->setDecimals(0);
 	} else {
-		toSpin->setDecimals(MainWindow::sizePrecision());
+		toSpin->setDecimals(sizePrecision);
 	}
 }
 
@@ -76,7 +78,7 @@ void FindWidget::onFind() {
 		text = nameEdit->text();
 		if (!text.isEmpty()) {
 			SiloFilter *filter = new SiloFilter(parent);
-			filter->setFilterKeyColumn(MainWindow::ID_NAME);
+			filter->setFilterKeyColumn(ID_NAME);
 			filter->setFilterWildcard(text);
 			filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
 			parent->appendFilter(filter);
@@ -86,7 +88,7 @@ void FindWidget::onFind() {
 		text = typeEdit->text();
 		if (!text.isEmpty()) {
 			SiloFilter *filter = new SiloFilter(parent);
-			filter->setFilterKeyColumn(MainWindow::ID_TYPE);
+			filter->setFilterKeyColumn(ID_TYPE);
 			filter->setFilterWildcard(text);
 			filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
 			parent->appendFilter(filter);
@@ -96,7 +98,7 @@ void FindWidget::onFind() {
 		text = pathEdit->text();
 		if (!text.isEmpty()) {
 			SiloFilter *filter = new SiloFilter(parent);
-			filter->setFilterKeyColumn(MainWindow::ID_PATH);
+			filter->setFilterKeyColumn(ID_PATH);
 			filter->setFilterWildcard(text);
 			filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
 			parent->appendFilter(filter);
@@ -106,7 +108,7 @@ void FindWidget::onFind() {
 		text = labelEdit->text();
 		if (!text.isEmpty()) {
 			SiloFilter *filter = new SiloFilter(parent);
-			filter->setFilterKeyColumn(MainWindow::ID_LABEL);
+			filter->setFilterKeyColumn(ID_LABEL);
 			filter->setFilterWildcard(text);
 			filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
 			parent->appendFilter(filter);
@@ -116,7 +118,7 @@ void FindWidget::onFind() {
 		text = commentEdit->text();
 		if (!text.isEmpty()) {
 			SiloFilter *filter = new SiloFilter(parent);
-			filter->setFilterKeyColumn(MainWindow::ID_COMMENT);
+			filter->setFilterKeyColumn(ID_COMMENT);
 			filter->setFilterWildcard(text);
 			filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
 			parent->appendFilter(filter);
@@ -130,46 +132,43 @@ void FindWidget::onFind() {
 			bool invert = min > max;
 			SiloFilter *minFilter = new SiloFilter(parent);
 			SiloFilter *maxFilter = new SiloFilter(parent);
-			minFilter->setFilterKeyColumn(MainWindow::ID_DATE);
-			maxFilter->setFilterKeyColumn(MainWindow::ID_DATE);
-			minFilter->setFilterDateTime(min, invert ? SiloFilter::FILTER_LESS
-					: SiloFilter::FILTER_MORE);
-			maxFilter->setFilterDateTime(max, invert ? SiloFilter::FILTER_MORE
-					: SiloFilter::FILTER_LESS);
+			minFilter->setFilterKeyColumn(ID_DATE);
+			maxFilter->setFilterKeyColumn(ID_DATE);
+			minFilter->setFilterDateTime(min, invert ? FILTER_LESS
+					: FILTER_MORE);
+			maxFilter->setFilterDateTime(max, invert ? FILTER_MORE
+					: FILTER_LESS);
 			parent->appendFilter(minFilter);
 			parent->appendFilter(maxFilter);
 		} else {
 			SiloFilter *filter = new SiloFilter(parent);
-			filter->setFilterKeyColumn(MainWindow::ID_DATE);
-			filter->setFilterDateTime(dateTimeEdit->dateTime(),
-					SiloFilter::FilterType(dateFilterType));
+			filter->setFilterKeyColumn(ID_DATE);
+			filter->setFilterDateTime(dateTimeEdit->dateTime(), FilterType(
+					dateFilterType));
 			parent->appendFilter(filter);
 		}
 	}
 	if (sizeCheck->isChecked()) {
 		int sizeFilterType = sizeFilterCombo->currentIndex();
 		if (sizeFilterType == sizeFilterCombo->count() - 1) {
-			qint64 min = MainWindow::getBytes(sizeSpin->value(),
-					MainWindow::UnitType(sizeUnitCombo->currentIndex()));
-			qint64 max = MainWindow::getBytes(toSpin->value(),
-					MainWindow::UnitType(toUnitCombo->currentIndex()));
+			qint64 min = getBytes(sizeSpin->value(), UnitType(
+					sizeUnitCombo->currentIndex()));
+			qint64 max = getBytes(toSpin->value(), UnitType(
+					toUnitCombo->currentIndex()));
 			bool invert = min > max;
 			SiloFilter *minFilter = new SiloFilter(parent);
 			SiloFilter *maxFilter = new SiloFilter(parent);
-			minFilter->setFilterKeyColumn(MainWindow::ID_SIZE);
-			maxFilter->setFilterKeyColumn(MainWindow::ID_SIZE);
-			minFilter->setFilterSize(min, invert ? SiloFilter::FILTER_LESS
-					: SiloFilter::FILTER_MORE);
-			maxFilter->setFilterSize(max, invert ? SiloFilter::FILTER_MORE
-					: SiloFilter::FILTER_LESS);
+			minFilter->setFilterKeyColumn(ID_SIZE);
+			maxFilter->setFilterKeyColumn(ID_SIZE);
+			minFilter->setFilterSize(min, invert ? FILTER_LESS : FILTER_MORE);
+			maxFilter->setFilterSize(max, invert ? FILTER_MORE : FILTER_LESS);
 			parent->appendFilter(minFilter);
 			parent->appendFilter(maxFilter);
 		} else {
 			SiloFilter *filter = new SiloFilter(parent);
-			filter->setFilterKeyColumn(MainWindow::ID_SIZE);
-			filter->setFilterSize(MainWindow::getBytes(sizeSpin->value(),
-					MainWindow::UnitType(sizeUnitCombo->currentIndex())),
-					SiloFilter::FilterType(sizeFilterType));
+			filter->setFilterKeyColumn(ID_SIZE);
+			filter->setFilterSize(getBytes(sizeSpin->value(), UnitType(
+					sizeUnitCombo->currentIndex())), FilterType(sizeFilterType));
 			parent->appendFilter(filter);
 		}
 	}
@@ -185,8 +184,8 @@ void FindWidget::onClear() {
 void FindWidget::setupAppearance() {
 	populateDateCombo(dateFilterCombo);
 	populateSizeCombo(sizeFilterCombo);
-	MainWindow::populateUnitCombo(sizeUnitCombo);
-	MainWindow::populateUnitCombo(toUnitCombo);
+	populateUnitCombo(sizeUnitCombo);
+	populateUnitCombo(toUnitCombo);
 	onSizeFilterChanged(sizeFilterCombo->currentIndex());
 	onDateFilterChanged(dateFilterCombo->currentIndex());
 	onSizeToUnitChanged(toUnitCombo->currentIndex());

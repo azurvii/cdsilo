@@ -6,7 +6,9 @@
  */
 
 #include "silodelegate.h"
-#include "mainwindow.h"
+#include "common.h"
+#include <QLineEdit>
+using namespace Silo;
 
 SiloDelegate::SiloDelegate(QObject *parent) :
 	QStyledItemDelegate(parent) {
@@ -15,14 +17,9 @@ SiloDelegate::SiloDelegate(QObject *parent) :
 QWidget *SiloDelegate::createEditor(QWidget *parent,
 		const QStyleOptionViewItem &, const QModelIndex &index) const {
 	switch (index.column()) {
-	case MainWindow::ID_LABEL:
-	case MainWindow::ID_COMMENT:
+	case ID_LABEL:
+	case ID_COMMENT:
 		return new QLineEdit(parent);
-		//	case MainWindow::ID_NAME:
-		//	case MainWindow::ID_PATH:
-		//	case MainWindow::ID_SIZE:
-		//	case MainWindow::ID_DATE:
-		//	case MainWindow::ID_TYPE:
 	default:
 		return 0;
 	}
@@ -30,33 +27,19 @@ QWidget *SiloDelegate::createEditor(QWidget *parent,
 
 void SiloDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
 	switch (index.column()) {
-	case MainWindow::ID_LABEL:
-	case MainWindow::ID_COMMENT:
+	case ID_LABEL:
+	case ID_COMMENT:
 		((QLineEdit *) editor)->setText(index.data(Qt::DisplayRole).toString());
 		return;
-		//	case MainWindow::ID_NAME:
-		//	case MainWindow::ID_PATH:
-		//	case MainWindow::ID_SIZE:
-		//	case MainWindow::ID_DATE:
-		//	case MainWindow::ID_TYPE:
-		//	default:
-		//		return;
 	}
 }
 void SiloDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 		const QModelIndex &index) const {
 	switch (index.column()) {
-	case MainWindow::ID_LABEL:
-	case MainWindow::ID_COMMENT:
+	case ID_LABEL:
+	case ID_COMMENT:
 		model->setData(index, ((QLineEdit*) editor)->text(), Qt::DisplayRole);
 		return;
-		//	case MainWindow::ID_NAME:
-		//	case MainWindow::ID_PATH:
-		//	case MainWindow::ID_SIZE:
-		//	case MainWindow::ID_DATE:
-		//	case MainWindow::ID_TYPE:
-		//	default:
-		//		return;
 	}
 }
 
