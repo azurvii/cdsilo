@@ -1,0 +1,28 @@
+#summary A simple guide to use this software.
+#labels Phase-Support
+
+= User Guide =
+
+== Scan a Disc ==
+  # Insert your disc.
+  # Navigate to "Edit"->"Add Entry".
+  # Choose your disc's root.
+  # Enter disc label, e.g. 2008-01-12, and comments if any.
+  # Save it.
+You can pack all discs in one database.
+
+== Edit entries ==
+*Note:* you can only edit "label" and "comment", other fields are read from disc.
+
+You have two ways to edit labels and comments:
+  # *In-cell editing*: Double-click or start typing when the cell is selected.
+   This is suitable for editing single files.
+  # *Editor View editing*: Check bottom-right corner check box or in menu "View"->"Editor View".
+   This could be used when a batch need update.
+
+Also, you can delete unwanted items by selecting and pressing Delete.
+
+== Find items ==
+There are also two ways to find what you need:
+  # *Simple find*: Navigate to menu "Edit"->"Find". There will be a find bar to assist you. Use this to match a single criterion.
+  # *Advanced find*: navigate to menu "Edit"->"Advanced Find". A dialog would appear. And you can choose your criteria.
