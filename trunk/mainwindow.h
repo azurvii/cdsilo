@@ -13,6 +13,8 @@
 #include <QStandardItemModel>
 #include "silofilter.h"
 #include <QProgressDialog>
+#include "findwidget.h"
+#include <QList>
 
 class MainWindow: public QMainWindow, private Ui::MainWindow {
 Q_OBJECT
@@ -38,11 +40,27 @@ public:
 		UNIT_GB = 3,
 		UNIT_TB = 4,
 		UNIT_PB = 5,
-		UNIT_MAX = 6
+		UNIT_MAX = 6,
+		UNIT_MIN = 0
 	};
 
 public:
 	MainWindow(QWidget *parent = 0);
+	void appendFilter(SiloFilter *filter);
+	void clearFilters();
+
+public:
+	static QString getUnitName(UnitType unitId) {
+		return unitNames[unitId];
+	}
+	static void populateUnitCombo(QComboBox *combo);
+	static qint64 getBytes(double displayValue, UnitType unit);
+	static QString stringFromSize(qint64 size, int precision = sizeDecimal);
+	static void populateDateFilterCombo(QComboBox *combo);
+	static void populateSizeFilterCombo(QComboBox *combo);
+	static int sizePrecision() {
+		return sizeDecimal;
+	}
 
 protected:
 	bool eventFilter(QObject *watched, QEvent *event);
@@ -53,7 +71,8 @@ private slots:
 	bool load();
 	void add();
 	void del();
-	void resizeView();
+	void resizeColumns();
+	void resizeRows();
 	void onFindTextChanged(const QString &text);
 	void find();
 	void onSelectionChanged();
@@ -65,6 +84,7 @@ private slots:
 	void about();
 	void onFindTypeChanged(int index);
 	void onFindUnitChanged(int unit);
+	void onAdvancedFind();
 
 private:
 	bool saveFile(const QString &fileName);
@@ -89,8 +109,6 @@ private:
 	void setupConnections();
 	void setupEventFilters();
 	void setupAppearance();
-	void setupFindDateType();
-	void setupFindSizeType();
 	int selectionCount() {
 		return tableView->selectionModel()->selectedRows().size();
 	}
@@ -101,23 +119,21 @@ private:
 	static void rowsFromSelectionSorted(QList<int> &rows,
 			const QItemSelectionModel *selectionModel);
 	static void populateColumnCombo(QComboBox *combo);
-	static void populateUnitCombo(QComboBox *combo);
 	static void populateColumnNames();
 	static void populateUnitNames();
 	static void populateModelHeaders(QAbstractItemModel *model);
-	static QString byteString(qint64 bytes, int precision = 1);
-	static qint64 getBytes(double displayValue, UnitType unit);
-	static QString stringFromSize(qint64 size);
 
 private:
 	QStandardItemModel model;
-	SiloFilter filter;
+	SiloFilter *filter;
+	QList<SiloFilter *> filters;
 	int temporaryDuration;
 	QLineEdit *( editors[ID_MAX]);
 	QString lastOpenedPath;
 	QProgressDialog progress;
 	QLabel rowCountLabel;
 	bool isMulti[ID_MAX];
+	FindWidget findWidget;
 
 private:
 	static const qint16 dbVersion;
@@ -127,6 +143,7 @@ private:
 	static QHash<int, QString> columnNames;
 	static QHash<int, QString> unitNames;
 	static const QString multivalueString;
+	static const int sizeDecimal;
 };
 
 #endif /* MAINWINDOW_H_ */
