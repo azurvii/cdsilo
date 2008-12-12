@@ -1,0 +1,580 @@
+<ui version="4.0" >
+ <class>FindWidget</class>
+ <widget class="QWidget" name="FindWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>371</width>
+    <height>280</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Find</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="images/images.qrc" >
+    <normaloff>:/images/filefind.png</normaloff>:/images/filefind.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <property name="sizeConstraint" >
+    <enum>QLayout::SetFixedSize</enum>
+   </property>
+   <item>
+    <layout class="QFormLayout" name="formLayout" >
+     <item row="0" column="0" >
+      <widget class="QCheckBox" name="nameCheck" >
+       <property name="text" >
+        <string>&amp;Name:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" >
+      <widget class="QLineEdit" name="nameEdit" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" >
+      <widget class="QCheckBox" name="typeCheck" >
+       <property name="text" >
+        <string>&amp;Type:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QLineEdit" name="typeEdit" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" >
+      <widget class="QCheckBox" name="pathCheck" >
+       <property name="text" >
+        <string>&amp;Path:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" >
+      <widget class="QLineEdit" name="pathEdit" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" >
+      <widget class="QCheckBox" name="sizeCheck" >
+       <property name="text" >
+        <string>&amp;Size:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" >
+      <layout class="QGridLayout" name="gridLayout" >
+       <property name="spacing" >
+        <number>1</number>
+       </property>
+       <item row="0" column="0" >
+        <widget class="QComboBox" name="sizeFilterCombo" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <layout class="QHBoxLayout" name="horizontalLayout" >
+         <property name="spacing" >
+          <number>1</number>
+         </property>
+         <item>
+          <widget class="QDoubleSpinBox" name="sizeSpin" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="maximum" >
+            <double>2147483647.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="sizeUnitCombo" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0" >
+        <spacer name="horizontalSpacer" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Preferred</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1" >
+        <layout class="QHBoxLayout" name="horizontalLayout_2" >
+         <property name="spacing" >
+          <number>1</number>
+         </property>
+         <item>
+          <widget class="QDoubleSpinBox" name="toSpin" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="maximum" >
+            <double>2147483647.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="toUnitCombo" >
+           <property name="enabled" >
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0" >
+      <widget class="QCheckBox" name="dateCheck" >
+       <property name="text" >
+        <string>Last &amp;modified:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" >
+      <layout class="QGridLayout" name="gridLayout_2" >
+       <property name="spacing" >
+        <number>1</number>
+       </property>
+       <item row="0" column="0" >
+        <widget class="QComboBox" name="dateFilterCombo" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <widget class="QDateTimeEdit" name="dateTimeEdit" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="calendarPopup" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <spacer name="horizontalSpacer_2" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Preferred</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QDateTimeEdit" name="toDateTimeEdit" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="calendarPopup" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="5" column="0" >
+      <widget class="QCheckBox" name="labelCheck" >
+       <property name="text" >
+        <string>&amp;Label:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" >
+      <widget class="QLineEdit" name="labelEdit" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" >
+      <widget class="QCheckBox" name="commentCheck" >
+       <property name="text" >
+        <string>&amp;Comment:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1" >
+      <widget class="QLineEdit" name="commentEdit" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3" >
+     <item>
+      <widget class="QPushButton" name="clearButton" >
+       <property name="text" >
+        <string>Clear results</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="findButton" >
+       <property name="text" >
+        <string>Find</string>
+       </property>
+       <property name="default" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton" >
+       <property name="text" >
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>nameCheck</tabstop>
+  <tabstop>nameEdit</tabstop>
+  <tabstop>typeCheck</tabstop>
+  <tabstop>typeEdit</tabstop>
+  <tabstop>pathCheck</tabstop>
+  <tabstop>pathEdit</tabstop>
+  <tabstop>sizeCheck</tabstop>
+  <tabstop>sizeFilterCombo</tabstop>
+  <tabstop>sizeSpin</tabstop>
+  <tabstop>sizeUnitCombo</tabstop>
+  <tabstop>toSpin</tabstop>
+  <tabstop>toUnitCombo</tabstop>
+  <tabstop>dateCheck</tabstop>
+  <tabstop>dateFilterCombo</tabstop>
+  <tabstop>dateTimeEdit</tabstop>
+  <tabstop>toDateTimeEdit</tabstop>
+  <tabstop>labelCheck</tabstop>
+  <tabstop>labelEdit</tabstop>
+  <tabstop>commentCheck</tabstop>
+  <tabstop>commentEdit</tabstop>
+  <tabstop>findButton</tabstop>
+  <tabstop>closeButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="images/images.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>nameCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>nameEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>46</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>121</x>
+     <y>21</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>typeCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>typeEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>43</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>118</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pathCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>pathEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>45</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>119</x>
+     <y>72</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sizeCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sizeFilterCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>36</x>
+     <y>96</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>126</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sizeCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sizeSpin</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>31</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>213</x>
+     <y>101</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sizeCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sizeUnitCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>44</x>
+     <y>97</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>297</x>
+     <y>100</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sizeCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>toSpin</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>31</x>
+     <y>95</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>205</x>
+     <y>121</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sizeCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>toUnitCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>41</x>
+     <y>98</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>299</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dateCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dateFilterCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>60</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>141</x>
+     <y>151</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dateCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dateTimeEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>29</x>
+     <y>150</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>228</x>
+     <y>155</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dateCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>toDateTimeEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>33</x>
+     <y>157</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>201</x>
+     <y>173</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>labelCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>labelEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>45</x>
+     <y>198</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>117</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>commentCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>commentEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>61</x>
+     <y>227</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>124</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>FindWidget</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>299</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>325</x>
+     <y>275</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

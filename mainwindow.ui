@@ -5,17 +5,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>686</width>
-    <height>620</height>
+    <width>756</width>
+    <height>582</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>CD Silo</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="images/images.qrc" >
+    <normaloff>:/images/serpentine.png</normaloff>:/images/serpentine.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget" >
    <layout class="QVBoxLayout" name="verticalLayout" >
     <item>
-     <widget class="QWidget" native="1" name="findWidget" >
+     <widget class="QWidget" native="1" name="findBar" >
       <layout class="QHBoxLayout" name="horizontalLayout_3" >
        <property name="spacing" >
         <number>1</number>
@@ -351,7 +355,7 @@
     </item>
    </layout>
    <zorder>tableView</zorder>
-   <zorder>findWidget</zorder>
+   <zorder>findBar</zorder>
    <zorder>editGroup</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar" >
@@ -359,7 +363,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>686</width>
+     <width>756</width>
      <height>19</height>
     </rect>
    </property>
@@ -378,9 +382,9 @@
      <string>&amp;View</string>
     </property>
     <addaction name="actionEditView" />
-    <addaction name="actionFindView" />
     <addaction name="separator" />
-    <addaction name="actionResizeView" />
+    <addaction name="actionResizeColumns" />
+    <addaction name="actionResizeRows" />
    </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
@@ -389,6 +393,8 @@
     <addaction name="actionAdd" />
     <addaction name="actionDelete" />
     <addaction name="separator" />
+    <addaction name="actionFind" />
+    <addaction name="actionAdvancedFind" />
     <addaction name="actionEnableSorting" />
    </widget>
    <widget class="QMenu" name="menuHelp" >
@@ -461,13 +467,13 @@
      <normaloff>:/images/edit.png</normaloff>:/images/edit.png</iconset>
    </property>
    <property name="text" >
-    <string>Edit View</string>
+    <string>Editor View</string>
    </property>
    <property name="statusTip" >
-    <string>Show Edit View to modify data</string>
+    <string>Show Editor View to modify data</string>
    </property>
   </action>
-  <action name="actionFindView" >
+  <action name="actionFind" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -476,7 +482,7 @@
      <normaloff>:/images/find.png</normaloff>:/images/find.png</iconset>
    </property>
    <property name="text" >
-    <string>Find View</string>
+    <string>Find</string>
    </property>
    <property name="statusTip" >
     <string>Show Find View to find specific data with wildcard format</string>
@@ -500,22 +506,22 @@
      <normaloff>:/images/editdelete.png</normaloff>:/images/editdelete.png</iconset>
    </property>
    <property name="text" >
-    <string>Delete</string>
+    <string>Delete selection</string>
    </property>
    <property name="statusTip" >
     <string>Delete selected records</string>
    </property>
   </action>
-  <action name="actionResizeView" >
+  <action name="actionResizeColumns" >
    <property name="icon" >
     <iconset resource="images/images.qrc" >
      <normaloff>:/images/table.png</normaloff>:/images/table.png</iconset>
    </property>
    <property name="text" >
-    <string>Auto resize cells</string>
+    <string>Auto resize columns</string>
    </property>
    <property name="statusTip" >
-    <string>Set cell sizes to fit their contents</string>
+    <string>Resize columns to fit contents</string>
    </property>
   </action>
   <action name="actionEnableSorting" >
@@ -549,6 +555,27 @@
    </property>
    <property name="text" >
     <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionResizeRows" >
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/table.png</normaloff>:/images/table.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Auto resize rows</string>
+   </property>
+   <property name="statusTip" >
+    <string>Resize rows to fit contents</string>
+   </property>
+  </action>
+  <action name="actionAdvancedFind" >
+   <property name="icon" >
+    <iconset resource="images/images.qrc" >
+     <normaloff>:/images/filefind.png</normaloff>:/images/filefind.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Advanced Find</string>
    </property>
   </action>
  </widget>
@@ -609,9 +636,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionFindView</sender>
+   <sender>actionFind</sender>
    <signal>toggled(bool)</signal>
-   <receiver>findWidget</receiver>
+   <receiver>findBar</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -627,7 +654,7 @@
   <connection>
    <sender>closeFindButton</sender>
    <signal>clicked()</signal>
-   <receiver>actionFindView</receiver>
+   <receiver>actionFind</receiver>
    <slot>toggle()</slot>
    <hints>
     <hint type="sourcelabel" >

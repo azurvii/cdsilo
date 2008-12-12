@@ -25,11 +25,12 @@ const QString MainWindow::multivalueString = QObject::tr(
 		"<<< multiple values >>>");
 QHash<int, QString> MainWindow::columnNames;
 QHash<int, QString> MainWindow::unitNames;
+const int MainWindow::sizeDecimal = 2;
 
 //---------- public ----------//
 
 MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent) {
+	QMainWindow(parent), findWidget(this) {
 	setupUi(this);
 	temporaryDuration = 3000;
 	memset(isMulti, 0, ID_MAX * sizeof(bool));
@@ -39,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	if (unitNames.size() != UNIT_MAX) {
 		populateUnitNames();
 	}
+	filter = new SiloFilter(this);
 
 	linkEditors();
 
@@ -49,9 +51,82 @@ MainWindow::MainWindow(QWidget *parent) :
 	setupStatusBar();
 	tableView->setItemDelegate(new SiloDelegate(tableView));
 
-	filter.setSourceModel(&model);
+	filter->setSourceModel(&model);
 	actionEnableSorting->setChecked(true);
 	newFile();
+}
+
+void MainWindow::appendFilter(SiloFilter *filter) {
+	//	if (this->filter->isActive()) {
+	filter->setSourceModel(&model);
+	if (filters.size() > 0) {
+		filters.last()->setSourceModel(filter);
+	} else {
+		this->filter->setSourceModel(filter);
+	}
+	filters.append(filter);
+	//	} else {
+	//		filter->setSourceModel(&model);
+	//		tableView->setModel(filter);
+	//		delete this->filter;
+	//		this->filter = filter;
+	//	}
+	undoFindButton->setEnabled(filter->rowCount() != model.rowCount());
+	updateRowCount();
+}
+
+void MainWindow::clearFilters() {
+	if (filters.size() > 0) {
+		filter->setSourceModel(&model);
+		for (int i = filters.size() - 1; i >= 0; --i) {
+			delete filters[i];
+		}
+		filters.clear();
+	}
+	filter->setFilterType(SiloFilter::FILTER_INVALID);
+	filter->setFilterWildcard(QString());
+	undoFindButton->setEnabled(false);
+	updateRowCount();
+}
+
+//---------- public static ----------//
+
+qint64 MainWindow::getBytes(double displayValue, UnitType unit) {
+	int u = unit;
+	while (u > UNIT_B) {
+		displayValue *= 1024.0;
+		--u;
+	}
+	return qint64(displayValue);
+}
+
+QString MainWindow::stringFromSize(qint64 size, int precision) {
+	int unit = UNIT_B;
+	double displayValue = size;
+	while (displayValue >= 1024.0) {
+		if (unit >= UNIT_MAX) {
+			--unit;
+			break;
+		}
+		displayValue /= 1024.0;
+		++unit;
+	}
+	return tr("%1%2").arg(displayValue, 0, 'f', unit == 0 ? 0 : precision).arg(
+			unitNames[unit]);
+}
+
+void MainWindow::populateDateFilterCombo(QComboBox *combo) {
+	combo->clear();
+	combo->addItem(tr("Before"));
+	combo->addItem(tr("Exactly"));
+	combo->addItem(tr("After"));
+}
+
+void MainWindow::populateSizeFilterCombo(QComboBox *combo) {
+	combo->clear();
+	combo->addItem(tr("Less than"));
+	combo->addItem(tr("Exactly"));
+	combo->addItem(tr("More than"));
 }
 
 //---------- protected ----------//
@@ -150,14 +225,17 @@ void MainWindow::del() {
 	// Deleting starts backward to avoid error
 	if (rows.size() > 0) {
 		for (int i = rows.size() - 1; i >= 0; --i) {
-			filter.removeRow(rows[i]);
+			filter->removeRow(rows[i]);
 		}
 	}
 	updateRowCount();
 }
 
-void MainWindow::resizeView() {
+void MainWindow::resizeColumns() {
 	tableView->resizeColumnsToContents();
+}
+
+void MainWindow::resizeRows() {
 	tableView->resizeRowsToContents();
 }
 
@@ -169,29 +247,29 @@ void MainWindow::find() {
 	int stackIndex = findStack->currentIndex();
 	int index = findIdCombo->currentIndex();
 	if (index == ID_MAX) {
-		filter.setFilterKeyColumn(-1);
+		filter->setFilterKeyColumn(-1);
 	} else {
-		filter.setFilterKeyColumn(index);
+		filter->setFilterKeyColumn(index);
 	}
 	if (stackIndex == FIND_TEXT) {
 		QString findPattern = findEdit->text();
 		if (!QRegExp(findPattern, Qt::CaseInsensitive, QRegExp::Wildcard).isValid()) {
 			showTemporary(tr("The find wildcard is invalid"));
 		} else {
-			filter.setFilterCaseSensitivity(Qt::CaseInsensitive);
-			filter.setFilterWildcard(findPattern);
+			filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
+			filter->setFilterWildcard(findPattern);
 		}
 	} else if (stackIndex == FIND_DATE) {
-		filter.setFilterDateTime(findDateTimeEdit->dateTime(),
+		filter->setFilterDateTime(findDateTimeEdit->dateTime(),
 				SiloFilter::FilterType(findDateTypeCombo->currentIndex()));
-		filter.setFilterWildcard(QString());
+		filter->setFilterWildcard(QString());
 	} else if (stackIndex == FIND_SIZE) {
-		filter.setFilterSize(getBytes(findSizeSpin->value(), UnitType(
+		filter->setFilterSize(getBytes(findSizeSpin->value(), UnitType(
 				findUnitCombo->currentIndex())), SiloFilter::FilterType(
 				findSizeTypeCombo->currentIndex()));
-		filter.setFilterWildcard(QString());
+		filter->setFilterWildcard(QString());
 	}
-	undoFindButton->setEnabled(filter.rowCount() != model.rowCount());
+	undoFindButton->setEnabled(filter->rowCount() != model.rowCount());
 	updateRowCount();
 }
 
@@ -212,10 +290,7 @@ void MainWindow::onCommentEdited() {
 }
 
 void MainWindow::onUndoFind() {
-	filter.setFilterType(SiloFilter::FILTER_INVALID);
-	filter.setFilterWildcard(QString());
-	undoFindButton->setEnabled(false);
-	updateRowCount();
+	clearFilters();
 }
 
 void MainWindow::enableSorting(bool enabled) {
@@ -230,15 +305,16 @@ void MainWindow::onFindViewShown(bool shown) {
 }
 
 void MainWindow::about() {
-	QMessageBox::about(this, tr("About CD Silo"), tr(
-			"This is originally writen by Vincent."
-				"\nIn memory of the passing 2008"
-				"\n"
-				"\nI wrote this in hope to simplify my data CD/DVD collection management."
-				"\nIf you are overwhelmed by your burnt CD/DVD's, get it a try."
-				"\n"
-				"\nThis program is provided \"AS IS\" with NO WARRANTY."
-				"\nIf you find bugs, please contact me."));
+	QMessageBox::about(this, tr("About CD Silo"), tr("CD Silo 0.2"
+		"\n"
+		"\nThis is originally writen by Vincent."
+		"\nIcons used here are all from Oxygen and Qt."
+		"\n"
+		"\nI wrote this in hope to simplify my data CD/DVD collection management."
+		"\nIf you want to get your burnt CD/DVD's in control, get it a try."
+		"\n"
+		"\nThis program is provided \"AS IS\" with NO WARRANTY."
+		"\nIf you find bugs, please contact me."));
 }
 
 void MainWindow::onFindTypeChanged(int index) {
@@ -259,8 +335,12 @@ void MainWindow::onFindUnitChanged(int unit) {
 	if (unit == UNIT_B) {
 		findSizeSpin->setDecimals(0);
 	} else {
-		findSizeSpin->setDecimals(2);
+		findSizeSpin->setDecimals(sizeDecimal);
 	}
+}
+
+void MainWindow::onAdvancedFind() {
+	findWidget.show();
 }
 
 //---------- private ----------//
@@ -495,7 +575,7 @@ void MainWindow::showError(const QString &message) {
 }
 
 void MainWindow::connectModel() {
-	tableView->setModel(&filter);
+	tableView->setModel(filter);
 	connect(tableView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), this,
 			SLOT(onSelectionChanged()));
 }
@@ -536,17 +616,17 @@ void MainWindow::updateEditors() {
 			isMulti[col] = false;
 			if (col == ID_SIZE) {
 				sizeSum
-						+= filter.index(firstRow, col).data(Qt::DisplayRole).toInt();
+						+= filter->index(firstRow, col).data(Qt::DisplayRole).toInt();
 				contents[col] = stringFromSize(sizeSum);
 				continue;
 			} else if (col == ID_DATE) {
-				minDateTime = maxDateTime = filter.index(firstRow, col).data(
+				minDateTime = maxDateTime = filter->index(firstRow, col).data(
 						Qt::DisplayRole).toDateTime();
 				contents[col] = minDateTime.toString(dateTimeFormat);
 				continue;
 			}
 			contents[col]
-					= filter.index(firstRow, col).data(Qt::DisplayRole).toString();
+					= filter->index(firstRow, col).data(Qt::DisplayRole).toString();
 		}
 		QDateTime recordDateTime;
 		if (count == 1) {
@@ -557,11 +637,11 @@ void MainWindow::updateEditors() {
 			for (int i = 1; i < count; ++i) {
 				for (int col = ID_MIN; col < ID_MAX; ++col) {
 					if (col == ID_SIZE) {
-						sizeSum += filter.index(rows[i], col).data(
+						sizeSum += filter->index(rows[i], col).data(
 								Qt::DisplayRole).toInt();
 						continue;
 					} else if (col == ID_DATE) {
-						recordDateTime = filter.index(rows[i], col).data(
+						recordDateTime = filter->index(rows[i], col).data(
 								Qt::DisplayRole).toDateTime();
 						if (recordDateTime > maxDateTime) {
 							maxDateTime = recordDateTime;
@@ -573,7 +653,7 @@ void MainWindow::updateEditors() {
 					if (isMulti[col]) {
 						continue;
 					}
-					if (filter.index(rows[i], col).data(Qt::DisplayRole).toString()
+					if (filter->index(rows[i], col).data(Qt::DisplayRole).toString()
 							!= contents[col]) {
 						isMulti[col] = true;
 						contents[col] = multivalueString;
@@ -617,14 +697,14 @@ void MainWindow::updateModelFromEditor(MainWindow::ColumnType editorId) {
 	int size = rows.size();
 	if (size > 0) {
 		for (int i = size - 1; i >= 0; --i) {
-			filter.setData(filter.index(rows[i], editorId),
+			filter->setData(filter->index(rows[i], editorId),
 					editors[editorId]->text(), Qt::DisplayRole);
 		}
 	}
 }
 
 void MainWindow::updateRowCount() {
-	int shownRows = filter.rowCount();
+	int shownRows = filter->rowCount();
 	int modelRows = model.rowCount();
 	rowCountLabel.setText(tr("%1 %2").arg(
 			shownRows == modelRows ? QString::number(shownRows)
@@ -636,16 +716,15 @@ void MainWindow::setupShortcuts() {
 	actionExit->setShortcut(tr("Ctrl+Q"));
 	actionEnableSorting->setShortcut(tr("Ctrl+T"));
 	actionEditView->setShortcut(tr("Ctrl+E"));
-	actionResizeView->setShortcut(tr("Ctrl+R"));
 	actionNew->setShortcut(QKeySequence::New);
 	actionOpen->setShortcut(QKeySequence::Open);
 	actionSave->setShortcut(QKeySequence::Save);
-	actionFindView->setShortcut(QKeySequence::Find);
+	actionFind->setShortcut(QKeySequence::Find);
 }
 
 void MainWindow::setupStatusBar() {
 	QCheckBox *editCheck = new QCheckBox(this);
-	editCheck->setText(tr("Editor mode"));
+	editCheck->setText(tr("Editor View"));
 	statusBar()->addPermanentWidget(&rowCountLabel);
 	statusBar()->addPermanentWidget(editCheck);
 	connect(editCheck, SIGNAL(toggled(bool)), actionEditView, SLOT(setChecked(bool)));
@@ -658,19 +737,21 @@ void MainWindow::setupConnections() {
 	connect(actionSave, SIGNAL(triggered()), this, SLOT(save()));
 	connect(actionAdd, SIGNAL(triggered()), this, SLOT(add()));
 	connect(actionDelete, SIGNAL(triggered()), this, SLOT(del()));
-	connect(actionResizeView, SIGNAL(triggered()), this, SLOT(resizeView()));
+	connect(actionResizeColumns, SIGNAL(triggered()), this, SLOT(resizeColumns()));
+	connect(actionResizeRows, SIGNAL(triggered()), this, SLOT(resizeRows()));
 	connect(findButton, SIGNAL(clicked()), this, SLOT(find()));
 	connect(findEdit, SIGNAL(textChanged(const QString &)), this, SLOT(onFindTextChanged(const QString &)));
 	connect(fileLabelEdit, SIGNAL(editingFinished()), this, SLOT(onLabelEdited()));
 	connect(fileCommentEdit, SIGNAL(editingFinished()), this, SLOT(onCommentEdited()));
 	connect(undoFindButton, SIGNAL(clicked()), this, SLOT(onUndoFind()));
 	connect(actionEnableSorting, SIGNAL(toggled(bool)), this, SLOT(enableSorting(bool)));
-	connect(actionFindView, SIGNAL(toggled(bool)), this, SLOT(onFindViewShown(bool)));
+	connect(actionFind, SIGNAL(toggled(bool)), this, SLOT(onFindViewShown(bool)));
 	connect(actionEditView, SIGNAL(toggled(bool)), this, SLOT(onSelectionChanged()));
 	connect(actionAbout, SIGNAL(triggered()), this, SLOT(about()));
 	connect(actionAboutQt, SIGNAL(triggered()),qApp, SLOT(aboutQt()));
 	connect(findIdCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onFindTypeChanged(int)));
 	connect(findUnitCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onFindUnitChanged(int)));
+	connect(actionAdvancedFind, SIGNAL(triggered()), this, SLOT(onAdvancedFind()));
 }
 
 void MainWindow::setupEventFilters() {
@@ -688,24 +769,12 @@ void MainWindow::setupAppearance() {
 	tableView->verticalHeader()->hide();
 	editGroup->setVisible(actionEditView->isChecked());
 	enableSorting(actionEnableSorting->isChecked());
-	findWidget->setVisible(actionFindView->isChecked());
+	findBar->setVisible(actionFind->isChecked());
 	clearFindButton->setEnabled(!findEdit->text().isEmpty());
-	setupFindDateType();
-	setupFindSizeType();
-}
-
-void MainWindow::setupFindDateType() {
-	findDateTypeCombo->clear();
-	findDateTypeCombo->addItem(tr("Before"));
-	findDateTypeCombo->addItem(tr("Exactly"));
-	findDateTypeCombo->addItem(tr("After"));
-}
-
-void MainWindow::setupFindSizeType() {
-	findSizeTypeCombo->clear();
-	findSizeTypeCombo->addItem(tr("Less than"));
-	findSizeTypeCombo->addItem(tr("Exactly"));
-	findSizeTypeCombo->addItem(tr("More than"));
+	populateDateFilterCombo(findDateTypeCombo);
+	populateSizeFilterCombo(findSizeTypeCombo);
+	progress.setWindowTitle(tr("CD Silo"));
+	findDateTimeEdit->setDateTime(QDateTime::currentDateTime());
 }
 
 //---------- private static ----------//
@@ -726,11 +795,17 @@ void MainWindow::rowsFromSelectionSorted(QList<int> &modelRows,
 }
 
 void MainWindow::populateColumnCombo(QComboBox *combo) {
+	if (columnNames.size() != ID_MAX) {
+		populateColumnNames();
+	}
 	combo->clear();
 	combo->addItems(columnNames.values());
 }
 
 void MainWindow::populateUnitCombo(QComboBox *combo) {
+	if (unitNames.size() != UNIT_MAX) {
+		populateUnitNames();
+	}
 	combo->clear();
 	combo->addItems(unitNames.values());
 }
@@ -771,32 +846,4 @@ void MainWindow::populateModelHeaders(QAbstractItemModel *model) {
 			Qt::DisplayRole);
 	model->setHeaderData(ID_COMMENT, Qt::Horizontal, columnNames[ID_COMMENT],
 			Qt::DisplayRole);
-}
-
-QString MainWindow::byteString(qint64 bytes, int precision) {
-	int unit = UNIT_B;
-	double displayValue = bytes;
-	while (displayValue >= 1024.0) {
-		if (unit >= UNIT_MAX) {
-			--unit;
-			break;
-		}
-		displayValue /= 1024.0;
-		++unit;
-	}
-	return tr("%1%2").arg(displayValue, 0, 'f', unit == 0 ? 0 : precision).arg(
-			unitNames[unit]);
-}
-
-qint64 MainWindow::getBytes(double displayValue, UnitType unit) {
-	int u = unit;
-	while (u > UNIT_B) {
-		displayValue *= 1024.0;
-		--u;
-	}
-	return qint64(displayValue);
-}
-
-QString MainWindow::stringFromSize(qint64 size) {
-	return tr("%1" /* (%2B)"*/).arg(byteString(size))/*.arg(size)*/;
 }

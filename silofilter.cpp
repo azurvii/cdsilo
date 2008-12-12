@@ -34,6 +34,9 @@ bool SiloFilter::filterAcceptsRow(int sourceRow,
 		const QModelIndex &sourceParent) const {
 	int keyColumn = filterKeyColumn();
 	if (keyColumn == MainWindow::ID_DATE) {
+		if (filterType == FILTER_INVALID) {
+			return true;
+		}
 		QModelIndex index = sourceModel()->index(sourceRow, keyColumn,
 				sourceParent);
 		switch (filterType) {
@@ -43,10 +46,11 @@ bool SiloFilter::filterAcceptsRow(int sourceRow,
 			return index.data(Qt::DisplayRole).toDateTime() > filterDate;
 		case FILTER_MATCH:
 			return index.data(Qt::DisplayRole).toDateTime() == filterDate;
-		case FILTER_INVALID:
-			return true;
 		}
 	} else if (keyColumn == MainWindow::ID_SIZE) {
+		if (filterType == FILTER_INVALID) {
+			return true;
+		}
 		QModelIndex index = sourceModel()->index(sourceRow, keyColumn,
 				sourceParent);
 		switch (filterType) {
@@ -56,12 +60,7 @@ bool SiloFilter::filterAcceptsRow(int sourceRow,
 			return index.data(Qt::DisplayRole).toLongLong() > filterSize;
 		case FILTER_MATCH:
 			return index.data(Qt::DisplayRole).toLongLong() == filterSize;
-		case FILTER_INVALID:
-			return true;
 		}
-	} else if (filterType == FILTER_INVALID
-			&& filterRegExp().pattern().isEmpty()) {
-		return true;
 	}
 	return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
 }

@@ -9,6 +9,13 @@
     <height>100</height>
    </rect>
   </property>
+  <property name="windowTitle" >
+   <string>Add Entry</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="images/images.qrc" >
+    <normaloff>:/images/edit_add.png</normaloff>:/images/edit_add.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <property name="sizeConstraint" >
     <enum>QLayout::SetFixedSize</enum>
@@ -79,7 +86,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="images/images.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>pushButton</sender>

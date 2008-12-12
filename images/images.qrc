@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="images" >
+    <file>serpentine.png</file>
+    <file>filefind.png</file>
     <file>undo.png</file>
     <file>table.png</file>
     <file>edit.png</file>
