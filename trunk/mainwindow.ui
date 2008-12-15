@@ -404,9 +404,17 @@
     <addaction name="actionAbout" />
     <addaction name="actionAboutQt" />
    </widget>
+   <widget class="QMenu" name="menuLanguage" >
+    <property name="title" >
+     <string>&amp;Language</string>
+    </property>
+    <addaction name="actionLangEnglish" />
+    <addaction name="actionLangChineseSimplified" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuView" />
+   <addaction name="menuLanguage" />
    <addaction name="menuHelp" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
@@ -585,6 +593,22 @@
    </property>
    <property name="statusTip" >
     <string>Show advanced find option dialog</string>
+   </property>
+  </action>
+  <action name="actionLangEnglish" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>English</string>
+   </property>
+  </action>
+  <action name="actionLangChineseSimplified" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Chinese (Simplified)</string>
    </property>
   </action>
  </widget>

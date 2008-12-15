@@ -48,6 +48,7 @@ private slots:
 	void onFindTypeChanged(int index);
 	void onFindUnitChanged(int unit);
 	void onAdvancedFind();
+	void onLanguageChanged();
 
 private:
 	bool saveFile(const QString &fileName);
@@ -92,6 +93,7 @@ private:
 	QLabel rowCountLabel;
 	bool isMulti[ID_MAX];
 	FindWidget findWidget;
+	QActionGroup *languages;
 };
 
 #endif /* MAINWINDOW_H_ */
