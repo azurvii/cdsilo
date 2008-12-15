@@ -24,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
 		populateUnitNames();
 	}
 	filter = new SiloFilter(this);
+	languages = new QActionGroup(this);
+	languages->addAction(actionLangEnglish);
+	languages->addAction(actionLangChineseSimplified);
 
 	linkEditors();
 
@@ -275,6 +278,18 @@ void MainWindow::onAdvancedFind() {
 	findWidget.show();
 }
 
+void MainWindow::onLanguageChanged() {
+	QSettings settings(orgName, appName);
+	if (actionLangChineseSimplified->isChecked()) {
+		settings.setValue("lang", "zh_CN");
+	} else if (actionLangEnglish->isChecked()) {
+		settings.setValue("lang", "en");
+	}
+	QMessageBox::information(this, tr("Language Switch"), tr(
+			"Language preference saved."
+				"\nYou need to restart application to apply new language."));
+}
+
 //---------- private ----------//
 
 bool MainWindow::saveFile(const QString &fileName) {
@@ -516,7 +531,7 @@ void MainWindow::updateEditors() {
 					if (filter->index(rows[i], col).data(Qt::DisplayRole).toString()
 							!= contents[col]) {
 						isMulti[col] = true;
-						contents[col] = multivalueString;
+						contents[col] = tr("<<< multiple values >>>");
 					}
 				}
 			}
@@ -549,7 +564,7 @@ void MainWindow::linkEditors() {
 
 void MainWindow::updateModelFromEditor(ColumnType editorId) {
 	QString content = editors[editorId]->text();
-	if (isMulti[editorId] && content == multivalueString) {
+	if (isMulti[editorId] && content == tr("<<< multiple values >>>")) {
 		return;
 	}
 	QList<int> rows;
@@ -612,6 +627,8 @@ void MainWindow::setupConnections() {
 	connect(findIdCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onFindTypeChanged(int)));
 	connect(findUnitCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onFindUnitChanged(int)));
 	connect(actionAdvancedFind, SIGNAL(triggered()), this, SLOT(onAdvancedFind()));
+	connect(actionLangEnglish, SIGNAL(triggered()), this, SLOT(onLanguageChanged()));
+	connect(actionLangChineseSimplified, SIGNAL(triggered()), this, SLOT(onLanguageChanged()));
 }
 
 void MainWindow::setupEventFilters() {
@@ -635,6 +652,14 @@ void MainWindow::setupAppearance() {
 	populateSizeFilterCombo(findSizeTypeCombo);
 	progress.setWindowTitle(tr("CD Silo"));
 	findDateTimeEdit->setDateTime(QDateTime::currentDateTime());
+	switch (currentLanguage) {
+	case LANG_ZH_CN:
+		actionLangChineseSimplified->setChecked(true);
+		break;
+	case LANG_EN:
+		actionLangEnglish->setChecked(true);
+		break;
+	}
 }
 
 //---------- private static ----------//

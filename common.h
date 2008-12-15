@@ -50,14 +50,22 @@ enum FilterType {
 	FILTER_MAX = 3
 };
 
+enum Language {
+	LANG_EN, LANG_ZH_CN
+};
+
 extern const qint16 dbVersion;
 extern const qint16 dbHeader;
 extern const int dataStreamVersion;
 extern const QString dateTimeFormat;
-extern const QString multivalueString;
+//extern const QString multivalueString;
 extern QHash<int, QString> columnNames;
 extern QHash<int, QString> unitNames;
 extern const int sizePrecision;
+extern Language currentLanguage;
+// Strings used for QSettings:
+extern const char *orgName;
+extern const char *appName;
 
 void populateDateFilterCombo(QComboBox *combo);
 void populateSizeFilterCombo(QComboBox *combo);

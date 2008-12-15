@@ -14,10 +14,13 @@ const qint16 dbVersion = 0x0100;
 const qint16 dbHeader = 0xE7FC;
 const int dataStreamVersion = QDataStream::Qt_4_4;
 const QString dateTimeFormat = QObject::tr("yyyy-MM-dd HH:mm:ss");
-const QString multivalueString = QObject::tr("<<< multiple values >>>");
+//const QString multivalueString = QObject::tr("<<< multiple values >>>");
 QHash<int, QString> columnNames;
 QHash<int, QString> unitNames;
 const int sizePrecision = 2;
+Language currentLanguage = LANG_EN;
+const char *orgName = "azurvii";
+const char *appName = "CD Silo";
 
 void populateDateFilterCombo(QComboBox *combo) {
 	combo->clear();
